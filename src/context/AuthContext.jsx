@@ -6,7 +6,6 @@ const AuthContext = createContext(null)
 
 function normalizeStoredUser(parsed) {
   if (!parsed?.id || !parsed?.name) return null
-  // Sesiones antiguas pueden no tener role; lo restauramos para que Coach vea sus opciones
   const role = parsed.role ?? (parsed.id === 'coach' ? 'coach' : 'member')
   return { id: parsed.id, name: parsed.name, role }
 }

@@ -43,7 +43,7 @@ export default function CalloutsPage() {
   const [searchFilter, setSearchFilter] = useState('')
   const [selectedZoneId, setSelectedZoneId] = useState(null)
   const [practiceMode, setPracticeMode] = useState(false)
-  const [practiceReverseMode, setPracticeReverseMode] = useState(false) // ¿Cómo se llama? (zona resaltada, usuario escribe nombre)
+  const [practiceReverseMode, setPracticeReverseMode] = useState(false)
   const [practiceZoneId, setPracticeZoneId] = useState(null)
   const [practiceFeedback, setPracticeFeedback] = useState(null)
   const [practiceGuessInput, setPracticeGuessInput] = useState('')
