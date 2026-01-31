@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getLoginUsers, findUserByCredentials } from '../data/users'
+import { apiLogin } from '../data/authApi'
 import { APP_NAME } from '../version'
 
 export default function LoginPage() {
@@ -20,16 +21,25 @@ export default function LoginPage() {
     return null
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    const user = findUserByCredentials(username, password)
-    if (!user) {
-      setError('Usuario o contraseña incorrectos.')
-      return
+    try {
+      let user = null
+      try {
+        user = await apiLogin(username, password)
+      } catch {
+        user = findUserByCredentials(username, password)
+      }
+      if (!user) {
+        setError('Usuario o contraseña incorrectos.')
+        return
+      }
+      login(user)
+      navigate(redirectTo, { replace: true })
+    } catch (err) {
+      setError(err.message || 'Usuario o contraseña incorrectos.')
     }
-    login(user)
-    navigate(redirectTo, { replace: true })
   }
 
   return (

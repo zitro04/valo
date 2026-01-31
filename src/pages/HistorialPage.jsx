@@ -4,6 +4,7 @@ import { loadTeamMembers } from '../data/team'
 import { loadExamResults, getAllResultsForExport } from '../data/examResults'
 import { getMapById } from '../data/maps'
 import { clearProfilePassword } from '../data/profiles'
+import { apiResetPassword } from '../data/authApi'
 
 function formatDate(iso) {
   const d = new Date(iso)
@@ -61,12 +62,21 @@ export default function HistorialPage() {
     URL.revokeObjectURL(url)
   }
 
-  const handleResetPassword = (memberId) => {
-    if (resetConfirm === memberId) {
+  const [resetError, setResetError] = useState(null)
+
+  const handleResetPassword = async (memberId) => {
+    if (resetConfirm !== memberId) {
+      setResetConfirm(memberId)
+      setResetError(null)
+      return
+    }
+    setResetError(null)
+    try {
+      await apiResetPassword(user.id, memberId)
       clearProfilePassword(memberId)
       setResetConfirm(null)
-    } else {
-      setResetConfirm(memberId)
+    } catch (err) {
+      setResetError(err.message || 'No se pudo restablecer.')
     }
   }
 
@@ -160,6 +170,9 @@ export default function HistorialPage() {
               >
                 Cancelar
               </button>
+            )}
+            {resetError && (
+              <p className="mt-2 text-sm text-[var(--valorant-red)]">{resetError}</p>
             )}
           </section>
         )}

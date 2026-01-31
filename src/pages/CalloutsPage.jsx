@@ -253,7 +253,7 @@ export default function CalloutsPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="sticky top-0 z-40 shrink-0 border-b border-[var(--valorant-cyan)]/10 bg-[var(--valorant-black)]/90 backdrop-blur-sm">
+      <header className="shrink-0 border-b border-[var(--valorant-cyan)]/10 bg-[var(--valorant-black)]/90 backdrop-blur-sm">
         <div className="mx-auto max-w-6xl px-4 py-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between lg:px-10">
           <div className="flex items-center gap-4">
             <h1 className="text-xl font-bold tracking-wide text-white sm:text-2xl">

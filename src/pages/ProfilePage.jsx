@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { loadProfile, saveProfile, getProfilePassword } from '../data/profiles'
+import { apiSetPassword } from '../data/authApi'
 
 export default function ProfilePage() {
   const { user } = useAuth()
@@ -22,19 +23,12 @@ export default function ProfilePage() {
     setDescription(p?.description ?? '')
   }, [user])
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault()
     setError('')
     setSaved(false)
 
     if (newPassword.trim() || confirmPassword.trim()) {
-      const profilePass = getProfilePassword(user.id)
-      const defaultPass = 'valoplant'
-      const effectiveCurrent = profilePass ?? defaultPass
-      if (currentPassword !== effectiveCurrent) {
-        setError('La contraseña actual no es correcta.')
-        return
-      }
       if (newPassword.length > 0 && newPassword.length < 4) {
         setError('La nueva contraseña debe tener al menos 4 caracteres.')
         return
@@ -43,6 +37,22 @@ export default function ProfilePage() {
         setError('La nueva contraseña y la confirmación no coinciden.')
         return
       }
+      try {
+        await apiSetPassword(user.id, currentPassword, newPassword)
+      } catch (err) {
+        if (err.message && err.message.includes('actual no es correcta')) {
+          setError(err.message)
+          return
+        }
+        const profilePass = getProfilePassword(user.id)
+        const defaultPass = 'valoplant'
+        const effectiveCurrent = profilePass ?? defaultPass
+        if (currentPassword !== effectiveCurrent) {
+          setError('La contraseña actual no es correcta.')
+          return
+        }
+        saveProfile(user.id, { password: newPassword })
+      }
     }
 
     const data = {
@@ -50,8 +60,6 @@ export default function ProfilePage() {
       avatarUrl: avatarUrl.trim() || undefined,
       description: description.trim() || undefined,
     }
-    if (newPassword.trim()) data.password = newPassword
-
     saveProfile(user.id, data)
     setSaved(true)
     setCurrentPassword('')
