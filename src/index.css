@@ -21,6 +21,11 @@ body {
   color: #e8e8e8;
   font-family: "Rajdhani", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+@media (min-width: 1024px) {
+  body { padding: 0; }
 }
 
 /* Scrollbar discreta en paneles */
@@ -43,4 +48,15 @@ body {
 /* Enlace activo en sidebar (NavLink añade .active) */
 nav a.active {
   box-shadow: 0 0 20px rgba(0, 240, 255, 0.08);
+}
+
+/* Áreas táctiles mínimas en móvil (44px recomendado) */
+@media (max-width: 1023px) {
+  button:not(.no-touch-target),
+  a[role="button"],
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
 }

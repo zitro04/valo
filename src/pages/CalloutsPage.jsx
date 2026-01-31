@@ -259,13 +259,13 @@ export default function CalloutsPage() {
             <h1 className="text-xl font-bold tracking-wide text-white sm:text-2xl">
               <span className="text-[var(--valorant-cyan)]">Callouts</span>
             </h1>
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-2">
               {maps.map((map) => (
                 <button
                   key={map.id}
                   type="button"
                   onClick={() => setCurrentMapId(map.id)}
-                  className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+                  className={`rounded-lg px-4 py-2.5 min-h-[44px] text-sm font-medium transition touch-target ${
                     currentMapId === map.id
                       ? 'bg-[var(--valorant-cyan)] text-[var(--valorant-black)]'
                       : 'bg-[var(--valorant-panel)] text-gray-400 hover:bg-white/10 hover:text-white'
@@ -281,16 +281,16 @@ export default function CalloutsPage() {
               <button
                 type="button"
                 onClick={() => setExamStep('select')}
-                className="rounded-lg border border-[var(--valorant-cyan)]/40 bg-[var(--valorant-cyan)]/10 px-3 py-1.5 text-sm font-medium text-[var(--valorant-cyan)] transition hover:bg-[var(--valorant-cyan)]/20"
+                className="rounded-lg border border-[var(--valorant-cyan)]/40 bg-[var(--valorant-cyan)]/10 px-4 py-3 min-h-[44px] text-sm font-medium text-[var(--valorant-cyan)] transition hover:bg-[var(--valorant-cyan)]/20 touch-target"
               >
                 Modo examen (hasta 20 preguntas)
               </button>
             )}
             {callouts.length > 0 && examStep === 'idle' && (
               <>
-                <label className="flex items-center gap-2 cursor-pointer select-none">
+                <label className="flex items-center gap-2 cursor-pointer select-none min-h-[44px] touch-target">
                   <span className="text-sm text-gray-400">Modo práctica</span>
-                  <span className="relative inline-flex h-6 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-[var(--valorant-panel)] transition-colors focus-within:ring-2 focus-within:ring-[var(--valorant-cyan)] focus-within:ring-offset-2 focus-within:ring-offset-[var(--valorant-black)]">
+                  <span className="relative inline-flex h-7 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-[var(--valorant-panel)] transition-colors focus-within:ring-2 focus-within:ring-[var(--valorant-cyan)] focus-within:ring-offset-2 focus-within:ring-offset-[var(--valorant-black)]">
                     <input
                       type="checkbox"
                       checked={practiceMode}
@@ -325,7 +325,7 @@ export default function CalloutsPage() {
                         startPractice()
                         setPracticeFeedback(null)
                       }}
-                      className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                      className={`rounded-lg px-3 py-2.5 min-h-[44px] text-xs font-medium transition touch-target ${
                         !practiceReverseMode ? 'bg-[var(--valorant-cyan)]/20 text-[var(--valorant-cyan)]' : 'text-gray-400 hover:bg-white/5'
                       }`}
                     >
@@ -339,7 +339,7 @@ export default function CalloutsPage() {
                         startPractice()
                         setPracticeFeedback(null)
                       }}
-                      className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                      className={`rounded-lg px-3 py-2.5 min-h-[44px] text-xs font-medium transition touch-target ${
                         practiceReverseMode ? 'bg-[var(--valorant-cyan)]/20 text-[var(--valorant-cyan)]' : 'text-gray-400 hover:bg-white/5'
                       }`}
                     >
@@ -349,9 +349,9 @@ export default function CalloutsPage() {
                 )}
               </>
             )}
-            <label className={`flex items-center gap-3 cursor-pointer select-none ${examStep !== 'idle' ? 'opacity-50' : ''}`}>
+            <label className={`flex items-center gap-3 cursor-pointer select-none min-h-[44px] touch-target ${examStep !== 'idle' ? 'opacity-50' : ''}`}>
               <span className="text-sm text-gray-400">Modo Edición</span>
-              <span className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-[var(--valorant-panel)] transition-colors focus-within:ring-2 focus-within:ring-[var(--valorant-cyan)] focus-within:ring-offset-2 focus-within:ring-offset-[var(--valorant-black)]">
+              <span className="relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-[var(--valorant-panel)] transition-colors focus-within:ring-2 focus-within:ring-[var(--valorant-cyan)] focus-within:ring-offset-2 focus-within:ring-offset-[var(--valorant-black)]">
                 <input
                   type="checkbox"
                   checked={editMode}
@@ -392,7 +392,7 @@ export default function CalloutsPage() {
                     key={m.id}
                     type="button"
                     onClick={() => startExam(m)}
-                    className="rounded-lg border border-[var(--valorant-cyan)]/40 bg-[var(--valorant-cyan)]/10 px-4 py-2 text-sm font-medium text-[var(--valorant-cyan)] transition hover:bg-[var(--valorant-cyan)]/20"
+                    className="rounded-lg border border-[var(--valorant-cyan)]/40 bg-[var(--valorant-cyan)]/10 px-4 py-3 min-h-[44px] text-sm font-medium text-[var(--valorant-cyan)] transition hover:bg-[var(--valorant-cyan)]/20 touch-target"
                   >
                     {m.name}
                   </button>
@@ -401,7 +401,7 @@ export default function CalloutsPage() {
               <button
                 type="button"
                 onClick={() => setExamStep('idle')}
-                className="text-sm text-gray-500 hover:text-gray-300 transition"
+                className="min-h-[44px] px-3 text-sm text-gray-500 hover:text-gray-300 transition touch-target"
               >
                 Cancelar
               </button>
@@ -419,14 +419,14 @@ export default function CalloutsPage() {
                 <button
                   type="button"
                   onClick={() => setExamStep('select')}
-                  className="rounded-lg bg-[var(--valorant-cyan)] px-4 py-2 text-sm font-semibold text-[var(--valorant-black)] transition hover:opacity-90"
+                  className="rounded-lg bg-[var(--valorant-cyan)] px-4 py-3 min-h-[44px] text-sm font-semibold text-[var(--valorant-black)] transition hover:opacity-90 touch-target"
                 >
                   Nuevo examen
                 </button>
                 <button
                   type="button"
                   onClick={() => setExamStep('idle')}
-                  className="rounded-lg border border-gray-500 px-4 py-2 text-sm font-medium text-gray-400 transition hover:bg-white/5"
+                  className="rounded-lg border border-gray-500 px-4 py-3 min-h-[44px] text-sm font-medium text-gray-400 transition hover:bg-white/5 touch-target"
                 >
                   Volver
                 </button>
@@ -466,13 +466,13 @@ export default function CalloutsPage() {
                     onChange={(e) => setPracticeGuessInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && checkPracticeGuess()}
                     placeholder="Escribe el nombre del callout..."
-                    className="flex-1 min-w-[200px] rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-black)] px-3 py-2 text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
+                    className="flex-1 min-w-[200px] rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-black)] px-3 py-3 min-h-[44px] text-base text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
                   />
                   <button
                     type="button"
                     onClick={checkPracticeGuess}
                     disabled={!practiceGuessInput.trim()}
-                    className="rounded-lg bg-[var(--valorant-cyan)] px-4 py-2 text-sm font-semibold text-[var(--valorant-black)] transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-lg bg-[var(--valorant-cyan)] px-4 py-3 min-h-[44px] text-sm font-semibold text-[var(--valorant-black)] transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed touch-target"
                   >
                     Comprobar
                   </button>
@@ -508,7 +508,7 @@ export default function CalloutsPage() {
                 type="button"
                 onClick={handleUndoPoint}
                 disabled={editPoints.length === 0}
-                className="rounded-lg border border-gray-500 px-3 py-1.5 text-sm text-gray-300 transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg border border-gray-500 px-4 py-3 min-h-[44px] text-sm text-gray-300 transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50 touch-target"
               >
                 Deshacer último
               </button>
@@ -516,7 +516,7 @@ export default function CalloutsPage() {
                 type="button"
                 onClick={handleCancelPolygon}
                 disabled={editPoints.length === 0}
-                className="rounded-lg border border-gray-500 px-3 py-1.5 text-sm text-gray-300 transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg border border-gray-500 px-4 py-3 min-h-[44px] text-sm text-gray-300 transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50 touch-target"
               >
                 Cancelar polígono
               </button>
@@ -524,7 +524,7 @@ export default function CalloutsPage() {
                 type="button"
                 onClick={handleFinishPolygon}
                 disabled={editPoints.length < 3}
-                className="rounded-lg bg-[var(--valorant-cyan)] px-3 py-1.5 text-sm font-semibold text-[var(--valorant-black)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg bg-[var(--valorant-cyan)] px-4 py-3 min-h-[44px] text-sm font-semibold text-[var(--valorant-black)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 touch-target"
               >
                 Terminar y nombrar
               </button>
@@ -560,7 +560,7 @@ export default function CalloutsPage() {
                 <button
                   type="button"
                   onClick={handleCopyAllCallouts}
-                  className="text-xs text-gray-500 transition hover:text-[var(--valorant-cyan)]"
+                  className="min-h-[44px] px-2 text-xs text-gray-500 transition hover:text-[var(--valorant-cyan)] touch-target"
                   title="Copiar todos los callouts para guardar en el proyecto"
                 >
                   {copyAllFeedback ? '¡Copiado!' : 'Exportar todo'}
@@ -568,7 +568,7 @@ export default function CalloutsPage() {
                 <button
                   type="button"
                   onClick={handleResetCallouts}
-                  className="text-xs text-gray-500 transition hover:text-[var(--valorant-cyan)]"
+                  className="min-h-[44px] px-2 text-xs text-gray-500 transition hover:text-[var(--valorant-cyan)] touch-target"
                 >
                   Restablecer
                 </button>
@@ -582,27 +582,27 @@ export default function CalloutsPage() {
               placeholder="Buscar zona..."
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
-              className="mb-2 w-full rounded-lg border border-[var(--valorant-cyan)]/20 bg-[var(--valorant-black)] px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
+              className="mb-2 w-full rounded-lg border border-[var(--valorant-cyan)]/20 bg-[var(--valorant-black)] px-3 py-3 min-h-[44px] text-base text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
             />
             <ul className="max-h-48 space-y-1.5 overflow-y-auto text-sm text-gray-300">
               {filteredCallouts.map((z) => (
                 <li
                   key={z.id}
-                  className={`group flex items-center justify-between gap-2 rounded px-1 py-0.5 transition ${
+                  className={`group flex items-center justify-between gap-2 rounded px-2 py-2 min-h-[44px] transition touch-target ${
                     selectedZoneId === z.id ? 'bg-[var(--valorant-cyan)]/15 text-[var(--valorant-cyan)]' : 'hover:bg-white/5'
                   }`}
                 >
                   <button
                     type="button"
                     onClick={() => setSelectedZoneId((id) => (id === z.id ? null : z.id))}
-                    className="min-w-0 flex-1 truncate text-left"
+                    className="min-w-0 flex-1 truncate text-left min-h-[44px] py-2 flex items-center touch-target"
                   >
                     {z.name}
                   </button>
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); handleDeleteCallout(z.id, z.name) }}
-                    className="shrink-0 rounded p-1 text-gray-500 opacity-70 transition hover:bg-white/5 hover:text-[var(--valorant-red)] group-hover:opacity-100"
+                    className="shrink-0 rounded p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-500 opacity-70 transition hover:bg-white/5 hover:text-[var(--valorant-red)] group-hover:opacity-100 touch-target"
                     title="Eliminar zona"
                     aria-label={`Eliminar ${z.name}`}
                   >
@@ -648,7 +648,7 @@ export default function CalloutsPage() {
               <button
                 type="button"
                 onClick={handleCopyJson}
-                className="w-full rounded-lg bg-[var(--valorant-cyan)] px-3 py-2 text-sm font-semibold text-[var(--valorant-black)] transition hover:opacity-90 active:opacity-80"
+                className="w-full rounded-lg bg-[var(--valorant-cyan)] px-3 py-3 min-h-[44px] text-sm font-semibold text-[var(--valorant-black)] transition hover:opacity-90 active:opacity-80 touch-target"
               >
                 {copyFeedback ? '¡Copiado!' : 'Copiar JSON'}
               </button>

@@ -149,7 +149,7 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="text-xs text-[var(--valorant-cyan)] hover:underline"
+                  className="min-h-[44px] px-3 text-xs text-[var(--valorant-cyan)] hover:underline touch-target"
                 >
                   Subir foto
                 </button>
@@ -163,7 +163,7 @@ export default function ProfilePage() {
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder={user?.name}
-                    className="w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-2 text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
+                    className="w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-3 min-h-[44px] text-base text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
                   />
                   <p className="mt-1 text-xs text-gray-500">Si está vacío se usa el nombre del usuario.</p>
                 </div>
@@ -174,7 +174,7 @@ export default function ProfilePage() {
                     value={avatarUrl}
                     onChange={(e) => setAvatarUrl(e.target.value)}
                     placeholder="https://..."
-                    className="w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-2 text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
+                    className="w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-3 min-h-[44px] text-base text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
                   />
                 </div>
               </div>
@@ -187,7 +187,7 @@ export default function ProfilePage() {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Rol, frase, o lo que quieras..."
                 rows={3}
-                className="w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-2 text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none resize-none"
+                className="w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-3 min-h-[80px] text-base text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none resize-none"
               />
             </div>
           </section>
@@ -203,7 +203,7 @@ export default function ProfilePage() {
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="Solo si vas a cambiar la contraseña"
-                  className="w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-2 text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
+                  className="w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-3 min-h-[44px] text-base text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
                 />
               </div>
               <div>
@@ -213,7 +213,7 @@ export default function ProfilePage() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Mínimo 4 caracteres"
-                  className="w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-2 text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
+                  className="w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-3 min-h-[44px] text-base text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
                 />
               </div>
               <div>
@@ -223,7 +223,7 @@ export default function ProfilePage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Repite la nueva contraseña"
-                  className="w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-2 text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
+                  className="w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-3 min-h-[44px] text-base text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
                 />
               </div>
             </div>
@@ -234,7 +234,7 @@ export default function ProfilePage() {
 
           <button
             type="submit"
-            className="rounded-lg bg-[var(--valorant-cyan)] px-6 py-2.5 font-semibold text-[var(--valorant-black)] transition hover:opacity-90"
+            className="rounded-lg bg-[var(--valorant-cyan)] px-6 py-3 min-h-[48px] font-semibold text-[var(--valorant-black)] transition hover:opacity-90 touch-target"
           >
             Guardar cambios
           </button>

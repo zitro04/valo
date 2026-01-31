@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getLoginUsers, findUserByCredentials } from '../data/users'
+import { APP_NAME } from '../version'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -39,7 +40,7 @@ export default function LoginPage() {
             <TargetIcon className="h-7 w-7" />
           </div>
         </div>
-        <h1 className="text-center text-xl font-bold text-white">Valoplant</h1>
+        <h1 className="text-center text-xl font-bold text-white">{APP_NAME}</h1>
         <p className="mt-1 text-center text-sm text-gray-400">Inicia sesión con tu usuario</p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -54,7 +55,7 @@ export default function LoginPage() {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Escribe tu usuario"
               autoComplete="username"
-              className="mt-1 w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-2.5 text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none focus:ring-1 focus:ring-[var(--valorant-cyan)]"
+              className="mt-1 w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-3 min-h-[48px] text-base text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none focus:ring-1 focus:ring-[var(--valorant-cyan)]"
               required
             />
             <p className="mt-1.5 text-xs text-gray-500">
@@ -72,7 +73,7 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Contraseña"
               autoComplete="current-password"
-              className="mt-1 w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-2.5 text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none focus:ring-1 focus:ring-[var(--valorant-cyan)]"
+              className="mt-1 w-full rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] px-3 py-3 min-h-[48px] text-base text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none focus:ring-1 focus:ring-[var(--valorant-cyan)]"
               required
             />
             <p className="mt-1 text-xs text-gray-500">Por defecto: valoplant (o la que hayas puesto en tu perfil)</p>
@@ -83,7 +84,7 @@ export default function LoginPage() {
           )}
           <button
             type="submit"
-            className="w-full rounded-lg bg-[var(--valorant-cyan)] py-2.5 font-semibold text-[var(--valorant-black)] transition hover:opacity-90"
+            className="w-full rounded-lg bg-[var(--valorant-cyan)] py-3 min-h-[48px] font-semibold text-[var(--valorant-black)] transition hover:opacity-90 touch-target"
           >
             Entrar
           </button>

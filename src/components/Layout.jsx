@@ -62,12 +62,12 @@ export default function Layout() {
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--valorant-cyan)]/20 text-[var(--valorant-cyan)]">
               <TargetIcon className="h-5 w-5" />
             </div>
-            <span className="font-bold tracking-tight text-white">Valoplant</span>
+            <span className="font-bold tracking-tight text-white">{APP_NAME}</span>
           </div>
           <button
             type="button"
             onClick={() => setMenuOpen(false)}
-            className="rounded-lg p-2 text-gray-400 hover:bg-white/5 hover:text-white lg:hidden"
+            className="rounded-lg p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:bg-white/5 hover:text-white lg:hidden touch-target"
             aria-label="Cerrar menú"
           >
             <CloseIcon className="h-5 w-5" />
@@ -78,7 +78,7 @@ export default function Layout() {
             soon ? (
               <span
                 key={to}
-                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-500 opacity-80"
+                className="flex items-center gap-3 rounded-lg px-3 py-3 min-h-[44px] text-sm font-medium text-gray-500 opacity-80"
               >
                 <Icon className="h-5 w-5 shrink-0" />
                 <span className="truncate">{label}</span>
@@ -93,7 +93,7 @@ export default function Layout() {
                 end={exact}
                 onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+                  `flex items-center gap-3 rounded-lg px-3 py-3 min-h-[44px] touch-target text-sm font-medium transition ${
                     isActive
                       ? 'bg-[var(--valorant-cyan)]/15 text-[var(--valorant-cyan)] ring-1 ring-[var(--valorant-cyan)]/30'
                       : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
@@ -129,7 +129,7 @@ export default function Layout() {
           <button
             type="button"
             onClick={handleLogout}
-            className="w-full rounded-lg border border-gray-500 py-1.5 text-xs text-gray-400 transition hover:bg-white/5 hover:text-white"
+            className="w-full rounded-lg border border-gray-500 py-3 min-h-[44px] text-xs text-gray-400 transition hover:bg-white/5 hover:text-white touch-target"
           >
             Cerrar sesión
           </button>
@@ -145,12 +145,12 @@ export default function Layout() {
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
-            className="rounded-lg p-2 text-gray-400 hover:bg-white/5 hover:text-white"
+            className="rounded-lg p-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-gray-400 hover:bg-white/5 hover:text-white touch-target"
             aria-label="Abrir menú"
           >
             <MenuIcon className="h-6 w-6" />
           </button>
-          <span className="font-semibold text-white">Valoplant</span>
+          <span className="font-semibold text-white">{APP_NAME}</span>
         </div>
         <Outlet />
       </main>

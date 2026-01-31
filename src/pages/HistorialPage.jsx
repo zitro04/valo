@@ -46,7 +46,7 @@ export default function HistorialPage() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `valoplant-resultados-${new Date().toISOString().slice(0, 10)}.csv`
+    a.download = `calloutlab-resultados-${new Date().toISOString().slice(0, 10)}.csv`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -56,7 +56,7 @@ export default function HistorialPage() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `valoplant-resultados-${new Date().toISOString().slice(0, 10)}.json`
+    a.download = `calloutlab-resultados-${new Date().toISOString().slice(0, 10)}.json`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -101,14 +101,14 @@ export default function HistorialPage() {
           <button
             type="button"
             onClick={handleExportCSV}
-            className="rounded-lg border border-[var(--valorant-cyan)]/40 bg-[var(--valorant-cyan)]/10 px-4 py-2 text-sm font-medium text-[var(--valorant-cyan)] transition hover:bg-[var(--valorant-cyan)]/20"
+            className="rounded-lg border border-[var(--valorant-cyan)]/40 bg-[var(--valorant-cyan)]/10 px-4 py-3 min-h-[44px] text-sm font-medium text-[var(--valorant-cyan)] transition hover:bg-[var(--valorant-cyan)]/20 touch-target"
           >
             Exportar CSV
           </button>
           <button
             type="button"
             onClick={handleExportJSON}
-            className="rounded-lg border border-[var(--valorant-cyan)]/40 bg-[var(--valorant-cyan)]/10 px-4 py-2 text-sm font-medium text-[var(--valorant-cyan)] transition hover:bg-[var(--valorant-cyan)]/20"
+            className="rounded-lg border border-[var(--valorant-cyan)]/40 bg-[var(--valorant-cyan)]/10 px-4 py-3 min-h-[44px] text-sm font-medium text-[var(--valorant-cyan)] transition hover:bg-[var(--valorant-cyan)]/20 touch-target"
           >
             Exportar JSON
           </button>
@@ -144,7 +144,7 @@ export default function HistorialPage() {
             <button
               type="button"
               onClick={() => handleResetPassword(jugadorId)}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+              className={`rounded-lg px-4 py-3 min-h-[44px] text-sm font-medium transition touch-target ${
                 resetConfirm === jugadorId
                   ? 'bg-[var(--valorant-red)]/20 text-[var(--valorant-red)] hover:bg-[var(--valorant-red)]/30'
                   : 'border border-gray-500 text-gray-400 hover:bg-white/5'
@@ -156,7 +156,7 @@ export default function HistorialPage() {
               <button
                 type="button"
                 onClick={() => setResetConfirm(null)}
-                className="ml-2 text-sm text-gray-500 hover:text-gray-300"
+                className="ml-2 min-h-[44px] px-3 text-sm text-gray-500 hover:text-gray-300 touch-target"
               >
                 Cancelar
               </button>

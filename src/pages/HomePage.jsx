@@ -5,7 +5,7 @@ export default function HomePage() {
     <div className="min-h-screen">
       <div className="border-b border-[var(--valorant-cyan)]/10 bg-[var(--valorant-dark)]/30 px-6 py-8 lg:px-10">
         <h1 className="text-2xl font-bold text-white sm:text-3xl">
-          Bienvenido a <span className="text-[var(--valorant-cyan)]">Valoplant</span>
+          Bienvenido a <span className="text-[var(--valorant-cyan)]">CalloutLab</span>
         </h1>
         <p className="mt-2 max-w-2xl text-gray-400">
           Centro de herramientas para tu equipo de esports. Callouts, estrategias, roster y más en un solo lugar.
@@ -52,7 +52,7 @@ export default function HomePage() {
         </div>
 
         <div className="mt-10 rounded-xl border border-[var(--valorant-cyan)]/10 bg-[var(--valorant-dark)]/50 p-6">
-          <h2 className="text-lg font-semibold text-gray-300">¿Qué es Valoplant?</h2>
+          <h2 className="text-lg font-semibold text-gray-300">¿Qué es CalloutLab?</h2>
           <p className="mt-2 text-gray-400">
             Una suite de herramientas pensada para equipos de esports que quieren organizar callouts, estrategias y comunicación.
             Empieza con los callouts del mapa Pearl y mantén todo en un solo lugar cuando añadamos más funciones.
