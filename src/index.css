@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+:root {
+  --valorant-black: #0f0f0f;
+  --valorant-dark: #1a1a1f;
+  --valorant-cyan: #00f0ff;
+  --valorant-cyan-dim: rgba(0, 240, 255, 0.15);
+  --valorant-red: #ff4655;
+  --valorant-red-dim: rgba(255, 70, 85, 0.2);
+  --valorant-panel: #252530;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--valorant-black);
+  color: #e8e8e8;
+  font-family: "Rajdhani", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar discreta en paneles */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: var(--valorant-dark);
+  border-radius: 3px;
+}
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: var(--valorant-cyan);
+  border-radius: 3px;
+  opacity: 0.5;
+}
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: var(--valorant-cyan);
+}
+
+/* Enlace activo en sidebar (NavLink añade .active) */
+nav a.active {
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.08);
+}

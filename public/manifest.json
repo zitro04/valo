@@ -1,0 +1,24 @@
+{
+  "name": "Valoplant",
+  "short_name": "Valoplant",
+  "description": "Callouts y exámenes para tu equipo de Valorant",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f1923",
+  "theme_color": "#00f0ff",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/pearl-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pearl-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
