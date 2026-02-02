@@ -3,59 +3,61 @@ import { Link } from 'react-router-dom'
 export default function HomePage() {
   return (
     <div className="min-h-screen">
-      <div className="border-b border-[var(--valorant-cyan)]/10 bg-[var(--valorant-dark)]/30 px-6 py-8 lg:px-10">
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">
-          Bienvenido a <span className="text-[var(--valorant-cyan)]">CalloutLab</span>
-        </h1>
-        <p className="mt-2 max-w-2xl text-gray-400">
-          Centro de herramientas para tu equipo de esports. Callouts, estrategias, roster y más en un solo lugar.
-        </p>
+      <div className="relative overflow-hidden border-b border-[var(--valorant-cyan)]/15 bg-gradient-to-b from-[var(--valorant-dark)]/80 to-[var(--valorant-black)] px-6 py-12 lg:px-10">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(0,240,255,0.08),transparent)]" aria-hidden />
+        <div className="relative">
+          <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Bienvenido a <span className="text-[var(--valorant-cyan)] drop-shadow-[0_0_20px_rgba(0,240,255,0.3)]">CalloutLab</span>
+          </h1>
+          <p className="mt-3 max-w-2xl text-base text-gray-400 sm:text-lg">
+            Centro de herramientas para tu equipo de esports. Callouts, estrategias, roster y más en un solo lugar.
+          </p>
+        </div>
       </div>
 
       <div className="p-6 lg:p-10">
-        <h2 className="text-lg font-semibold text-gray-300">Acceso rápido</h2>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <h2 className="text-lg font-semibold text-gray-300 sm:text-xl">Acceso rápido</h2>
+        <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <Link
             to="/callouts"
-            className="group flex items-start gap-4 rounded-xl border border-[var(--valorant-cyan)]/20 bg-[var(--valorant-panel)]/60 p-5 transition hover:border-[var(--valorant-cyan)]/40 hover:bg-[var(--valorant-panel)]"
+            className="group flex items-start gap-4 rounded-xl border border-[var(--valorant-cyan)]/25 bg-[var(--valorant-panel)]/70 p-6 shadow-lg shadow-black/20 transition-all duration-200 hover:scale-[1.02] hover:border-[var(--valorant-cyan)]/50 hover:bg-[var(--valorant-panel)] hover:shadow-[var(--valorant-cyan)]/10 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--valorant-cyan)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--valorant-black)]"
           >
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[var(--valorant-cyan)]/20 text-[var(--valorant-cyan)] transition group-hover:bg-[var(--valorant-cyan)]/30">
-              <MapIcon className="h-6 w-6" />
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[var(--valorant-cyan)]/20 text-[var(--valorant-cyan)] shadow-inner transition group-hover:bg-[var(--valorant-cyan)]/30 group-hover:shadow-[0_0_24px_rgba(0,240,255,0.15)]">
+              <MapIcon className="h-7 w-7" />
             </div>
-            <div>
-              <h3 className="font-semibold text-white">Callouts</h3>
-              <p className="mt-0.5 text-sm text-gray-400">Todos los mapas: Pearl, Ascent, Bind y más. Zonas interactivas y modo edición.</p>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-bold text-white">Callouts</h3>
+              <p className="mt-1 text-sm leading-relaxed text-gray-400">Pearl, Bind y más. Zonas interactivas, práctica y examen.</p>
             </div>
           </Link>
 
-          <div className="flex items-start gap-4 rounded-xl border border-[var(--valorant-panel)] bg-[var(--valorant-panel)]/40 p-5 opacity-75">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gray-600/30 text-gray-500">
-              <BookIcon className="h-6 w-6" />
+          <div className="flex items-start gap-4 rounded-xl border border-white/5 bg-[var(--valorant-panel)]/40 p-6 opacity-80">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gray-600/20 text-gray-500">
+              <BookIcon className="h-7 w-7" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-400">Estrategias</h3>
-              <p className="mt-0.5 text-sm text-gray-500">Próximamente: plays, setups y notas por mapa.</p>
-              <span className="mt-2 inline-block rounded bg-[var(--valorant-panel)] px-2 py-0.5 text-xs text-gray-500">Pronto</span>
+              <h3 className="font-bold text-gray-500">Estrategias</h3>
+              <p className="mt-1 text-sm text-gray-500">Próximamente: plays, setups y notas por mapa.</p>
+              <span className="mt-3 inline-block rounded-md bg-[var(--valorant-panel)] px-2.5 py-1 text-xs font-medium uppercase tracking-wider text-gray-500">Pronto</span>
             </div>
           </div>
 
-          <div className="flex items-start gap-4 rounded-xl border border-[var(--valorant-panel)] bg-[var(--valorant-panel)]/40 p-5 opacity-75">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gray-600/30 text-gray-500">
-              <UsersIcon className="h-6 w-6" />
+          <div className="flex items-start gap-4 rounded-xl border border-white/5 bg-[var(--valorant-panel)]/40 p-6 opacity-80">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gray-600/20 text-gray-500">
+              <UsersIcon className="h-7 w-7" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-400">Roster</h3>
-              <p className="mt-0.5 text-sm text-gray-500">Próximamente: jugadores, roles y estadísticas.</p>
-              <span className="mt-2 inline-block rounded bg-[var(--valorant-panel)] px-2 py-0.5 text-xs text-gray-500">Pronto</span>
+              <h3 className="font-bold text-gray-500">Roster</h3>
+              <p className="mt-1 text-sm text-gray-500">Próximamente: jugadores, roles y estadísticas.</p>
+              <span className="mt-3 inline-block rounded-md bg-[var(--valorant-panel)] px-2.5 py-1 text-xs font-medium uppercase tracking-wider text-gray-500">Pronto</span>
             </div>
           </div>
         </div>
 
-        <div className="mt-10 rounded-xl border border-[var(--valorant-cyan)]/10 bg-[var(--valorant-dark)]/50 p-6">
-          <h2 className="text-lg font-semibold text-gray-300">¿Qué es CalloutLab?</h2>
-          <p className="mt-2 text-gray-400">
-            Una suite de herramientas pensada para equipos de esports que quieren organizar callouts, estrategias y comunicación.
-            Empieza con los callouts del mapa Pearl y mantén todo en un solo lugar cuando añadamos más funciones.
+        <div className="mt-12 rounded-xl border-l-4 border-[var(--valorant-cyan)]/50 border-[var(--valorant-cyan)]/10 bg-[var(--valorant-dark)]/60 p-6 shadow-inner">
+          <h2 className="text-lg font-semibold text-gray-200 sm:text-xl">¿Qué es CalloutLab?</h2>
+          <p className="mt-3 leading-relaxed text-gray-400">
+            Suite de herramientas para equipos de esports: organiza callouts, estrategias y comunicación. Empieza con los mapas Pearl y Bind y mantén todo en un solo lugar.
           </p>
         </div>
       </div>

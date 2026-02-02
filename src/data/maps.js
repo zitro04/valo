@@ -1,18 +1,14 @@
-/**
- * Mapas de Valorant disponibles para callouts.
- * imagePath: ruta en public/. Si es null, se muestra placeholder hasta que añadas la imagen.
- */
 export const maps = [
-  { id: 'pearl', name: 'Pearl', imagePath: '/pearl-icon.png' },
-  { id: 'ascent', name: 'Ascent', imagePath: null },
-  { id: 'bind', name: 'Bind', imagePath: null },
-  { id: 'haven', name: 'Haven', imagePath: null },
-  { id: 'icebox', name: 'Icebox', imagePath: null },
-  { id: 'split', name: 'Split', imagePath: null },
-  { id: 'breeze', name: 'Breeze', imagePath: null },
-  { id: 'fracture', name: 'Fracture', imagePath: null },
-  { id: 'lotus', name: 'Lotus', imagePath: null },
-  { id: 'sunset', name: 'Sunset', imagePath: null },
+  { id: 'pearl', name: 'Pearl', imagePath: '/pearl-icon.png', referenceImagePath: '/pearledit.png' },
+  { id: 'ascent', name: 'Ascent', imagePath: null, referenceImagePath: null },
+  { id: 'bind', name: 'Bind', imagePath: '/bindmapa.webp', referenceImagePath: null, model3D: '/bind_full_map.glb' },
+  { id: 'haven', name: 'Haven', imagePath: null, referenceImagePath: null },
+  { id: 'icebox', name: 'Icebox', imagePath: null, referenceImagePath: null },
+  { id: 'split', name: 'Split', imagePath: null, referenceImagePath: null },
+  { id: 'breeze', name: 'Breeze', imagePath: null, referenceImagePath: null },
+  { id: 'fracture', name: 'Fracture', imagePath: null, referenceImagePath: null },
+  { id: 'lotus', name: 'Lotus', imagePath: null, referenceImagePath: null },
+  { id: 'sunset', name: 'Sunset', imagePath: null, referenceImagePath: null },
 ]
 
 export function getMapById(id) {

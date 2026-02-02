@@ -1,14 +1,11 @@
-import { useState, useEffect } from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { loadProfile } from '../data/profiles'
+import { useState } from 'react'
+import { NavLink, Outlet } from 'react-router-dom'
 import { APP_VERSION, APP_NAME } from '../version'
 
 const navItems = [
   { to: '/', label: 'Inicio', icon: HomeIcon, exact: true },
   { to: '/callouts', label: 'Callouts', icon: MapIcon, exact: false },
   { to: '/historial', label: 'Historial', icon: HistoryIcon, exact: false },
-  { to: '/perfil', label: 'Mi perfil', icon: UserIcon, exact: false },
   { to: '/estrategias', label: 'Estrategias', icon: BookIcon, soon: true },
   { to: '/roster', label: 'Roster', icon: UsersIcon, soon: true },
   { to: '/calendario', label: 'Calendario', icon: CalendarIcon, soon: true },
@@ -17,33 +14,9 @@ const navItems = [
 
 export default function Layout() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [profile, setProfile] = useState(null)
-  const { user, logout } = useAuth()
-  const navigate = useNavigate()
-
-  const refreshProfile = () => {
-    if (user?.id) setProfile(loadProfile(user.id))
-    else setProfile(null)
-  }
-
-  useEffect(() => {
-    refreshProfile()
-  }, [user?.id])
-
-  useEffect(() => {
-    const handler = () => refreshProfile()
-    window.addEventListener('valoplant-profile-updated', handler)
-    return () => window.removeEventListener('valoplant-profile-updated', handler)
-  }, [user?.id])
-
-  const handleLogout = () => {
-    logout()
-    navigate('/login', { replace: true })
-  }
 
   return (
     <div className="flex min-h-screen bg-[var(--valorant-black)]">
-      {/* Overlay móvil */}
       <div
         className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
         style={{ opacity: menuOpen ? 1 : 0, pointerEvents: menuOpen ? 'auto' : 'none' }}
@@ -51,15 +24,14 @@ export default function Layout() {
         aria-hidden
       />
 
-      {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r border-[var(--valorant-cyan)]/10 bg-[var(--valorant-dark)] shadow-xl transition-transform duration-200 ease-out lg:w-64 lg:translate-x-0 ${
+        className={`fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r border-[var(--valorant-cyan)]/15 bg-[var(--valorant-dark)] shadow-2xl shadow-black/40 transition-transform duration-200 ease-out lg:w-64 lg:translate-x-0 ${
           menuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex h-16 items-center justify-between gap-2 border-b border-[var(--valorant-cyan)]/10 px-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--valorant-cyan)]/20 text-[var(--valorant-cyan)]">
+        <div className="flex h-16 items-center justify-between gap-2 border-b border-[var(--valorant-cyan)]/15 px-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--valorant-cyan)]/20 text-[var(--valorant-cyan)] shadow-sm ring-1 ring-[var(--valorant-cyan)]/20">
               <TargetIcon className="h-5 w-5" />
             </div>
             <span className="font-bold tracking-tight text-white">{APP_NAME}</span>
@@ -93,10 +65,10 @@ export default function Layout() {
                 end={exact}
                 onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-3 py-3 min-h-[44px] touch-target text-sm font-medium transition ${
-                    isActive
-                      ? 'bg-[var(--valorant-cyan)]/15 text-[var(--valorant-cyan)] ring-1 ring-[var(--valorant-cyan)]/30'
-                      : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
+                    `flex items-center gap-3 rounded-xl px-3 py-3 min-h-[44px] touch-target text-sm font-medium transition ${
+                      isActive
+                        ? 'bg-[var(--valorant-cyan)]/15 text-[var(--valorant-cyan)] ring-1 ring-[var(--valorant-cyan)]/40 shadow-[0_0_20px_rgba(0,240,255,0.06)]'
+                        : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
                   }`
                 }
               >
@@ -106,40 +78,13 @@ export default function Layout() {
             )
           )}
         </nav>
-        <div className="border-t border-[var(--valorant-cyan)]/10 p-3 space-y-3">
-          <NavLink
-            to="/perfil"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2 rounded-lg p-2 hover:bg-white/5 transition"
-          >
-            {profile?.avatarUrl ? (
-              <img src={profile.avatarUrl} alt="" className="h-9 w-9 rounded-full object-cover border border-[var(--valorant-cyan)]/30" />
-            ) : (
-              <div className="h-9 w-9 rounded-full bg-[var(--valorant-cyan)]/20 flex items-center justify-center text-sm font-bold text-[var(--valorant-cyan)]">
-                {(profile?.displayName || user?.name || '?').charAt(0).toUpperCase()}
-              </div>
-            )}
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium text-white truncate" title={profile?.displayName || user?.name}>
-                {profile?.displayName || user?.name}
-              </p>
-              <p className="text-[10px] text-gray-500">Mi perfil</p>
-            </div>
-          </NavLink>
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="w-full rounded-lg border border-gray-500 py-3 min-h-[44px] text-xs text-gray-400 transition hover:bg-white/5 hover:text-white touch-target"
-          >
-            Cerrar sesión
-          </button>
+        <div className="border-t border-[var(--valorant-cyan)]/10 p-3">
           <p className="pt-2 text-center text-[10px] text-gray-600" title="Acerca de">
             {APP_NAME} v{APP_VERSION}
           </p>
         </div>
       </aside>
 
-      {/* Main content */}
       <main className="flex-1 min-w-0 lg:pl-64">
         <div className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-[var(--valorant-cyan)]/10 bg-[var(--valorant-black)]/90 px-4 backdrop-blur-sm lg:hidden">
           <button
@@ -172,7 +117,6 @@ function CloseIcon({ className }) {
     </svg>
   )
 }
-
 function HomeIcon({ className }) {
   return (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,13 +170,6 @@ function TargetIcon({ className }) {
   return (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  )
-}
-function UserIcon({ className }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
     </svg>
   )
 }

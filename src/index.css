@@ -28,7 +28,6 @@ body {
   body { padding: 0; }
 }
 
-/* Scrollbar discreta en paneles */
 .overflow-y-auto::-webkit-scrollbar {
   width: 6px;
 }
@@ -45,12 +44,10 @@ body {
   background: var(--valorant-cyan);
 }
 
-/* Enlace activo en sidebar (NavLink añade .active) */
 nav a.active {
   box-shadow: 0 0 20px rgba(0, 240, 255, 0.08);
 }
 
-/* Áreas táctiles mínimas en móvil (44px recomendado) */
 @media (max-width: 1023px) {
   button:not(.no-touch-target),
   a[role="button"],
@@ -59,4 +56,16 @@ nav a.active {
     min-width: 44px;
     touch-action: manipulation;
   }
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--valorant-black), 0 0 0 4px var(--valorant-cyan);
+}
+
+html {
+  scroll-behavior: smooth;
 }
