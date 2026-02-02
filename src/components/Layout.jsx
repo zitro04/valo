@@ -17,6 +17,7 @@ export default function Layout() {
 
   return (
     <div className="flex min-h-screen bg-[var(--valorant-black)]">
+      {/* Overlay móvil */}
       <div
         className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
         style={{ opacity: menuOpen ? 1 : 0, pointerEvents: menuOpen ? 'auto' : 'none' }}
@@ -24,14 +25,15 @@ export default function Layout() {
         aria-hidden
       />
 
+      {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r border-[var(--valorant-cyan)]/15 bg-[var(--valorant-dark)] shadow-2xl shadow-black/40 transition-transform duration-200 ease-out lg:w-64 lg:translate-x-0 ${
+        className={`fixed left-0 top-0 z-50 flex h-full w-64 flex-col border-r border-[var(--valorant-cyan)]/10 bg-[var(--valorant-dark)] shadow-xl transition-transform duration-200 ease-out lg:w-64 lg:translate-x-0 ${
           menuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex h-16 items-center justify-between gap-2 border-b border-[var(--valorant-cyan)]/15 px-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--valorant-cyan)]/20 text-[var(--valorant-cyan)] shadow-sm ring-1 ring-[var(--valorant-cyan)]/20">
+        <div className="flex h-16 items-center justify-between gap-2 border-b border-[var(--valorant-cyan)]/10 px-4">
+          <div className="flex items-center gap-2">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--valorant-cyan)]/20 text-[var(--valorant-cyan)]">
               <TargetIcon className="h-5 w-5" />
             </div>
             <span className="font-bold tracking-tight text-white">{APP_NAME}</span>
@@ -65,10 +67,10 @@ export default function Layout() {
                 end={exact}
                 onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-xl px-3 py-3 min-h-[44px] touch-target text-sm font-medium transition ${
-                      isActive
-                        ? 'bg-[var(--valorant-cyan)]/15 text-[var(--valorant-cyan)] ring-1 ring-[var(--valorant-cyan)]/40 shadow-[0_0_20px_rgba(0,240,255,0.06)]'
-                        : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
+                  `flex items-center gap-3 rounded-lg px-3 py-3 min-h-[44px] touch-target text-sm font-medium transition ${
+                    isActive
+                      ? 'bg-[var(--valorant-cyan)]/15 text-[var(--valorant-cyan)] ring-1 ring-[var(--valorant-cyan)]/30'
+                      : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
                   }`
                 }
               >
@@ -79,12 +81,13 @@ export default function Layout() {
           )}
         </nav>
         <div className="border-t border-[var(--valorant-cyan)]/10 p-3">
-          <p className="pt-2 text-center text-[10px] text-gray-600" title="Acerca de">
+          <p className="text-center text-[10px] text-gray-600" title="Acerca de">
             {APP_NAME} v{APP_VERSION}
           </p>
         </div>
       </aside>
 
+      {/* Main content */}
       <main className="flex-1 min-w-0 lg:pl-64">
         <div className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-[var(--valorant-cyan)]/10 bg-[var(--valorant-black)]/90 px-4 backdrop-blur-sm lg:hidden">
           <button
@@ -117,6 +120,7 @@ function CloseIcon({ className }) {
     </svg>
   )
 }
+
 function HomeIcon({ className }) {
   return (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,6 +174,13 @@ function TargetIcon({ className }) {
   return (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  )
+}
+function UserIcon({ className }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
     </svg>
   )
 }
