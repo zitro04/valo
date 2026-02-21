@@ -8,6 +8,7 @@ import breeze from './breeze.json'
 import fracture from './fracture.json'
 import lotus from './lotus.json'
 import sunset from './sunset.json'
+import corrode from './corrode.json'
 
 export const defaultCalloutsByMap = {
   pearl,
@@ -20,6 +21,7 @@ export const defaultCalloutsByMap = {
   fracture,
   lotus,
   sunset,
+  corrode,
 }
 
 export function getDefaultCallouts(mapId) {

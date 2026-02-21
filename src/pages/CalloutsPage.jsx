@@ -55,6 +55,10 @@ export default function CalloutsPage() {
   const [examScore, setExamScore] = useState(0)
   const [examFeedback, setExamFeedback] = useState(null)
   const [show3DViewer, setShow3DViewer] = useState(false)
+  const [mapSection, setMapSection] = useState('zones')
+  const [examTimer, setExamTimer] = useState(0)
+  const [examTimerEnabled, setExamTimerEnabled] = useState(false)
+  const [examTimeLimit, setExamTimeLimit] = useState(10)
   const allowedExamJugadores = getSinglePlayerList()
 
   const currentMap = getMapById(currentMapId)
@@ -104,27 +108,89 @@ export default function CalloutsPage() {
     return shuffled.slice(0, Math.min(EXAM_SIZE, shuffled.length)).map((z) => z.id)
   }, [callouts])
 
+  const pick20WeightedZones = useCallback(() => {
+    if (callouts.length === 0) return []
+    const failKey = `valoplant-fails-${currentMapId}`
+    let fails = {}
+    try { fails = JSON.parse(localStorage.getItem(failKey) || '{}') } catch {}
+    const weighted = callouts.map((z) => ({ id: z.id, weight: 1 + (fails[z.id] || 0) * 2 }))
+    const totalWeight = weighted.reduce((s, w) => s + w.weight, 0)
+    const picked = []
+    const used = new Set()
+    const limit = Math.min(EXAM_SIZE, callouts.length)
+    while (picked.length < limit) {
+      let r = Math.random() * totalWeight
+      for (const w of weighted) {
+        if (used.has(w.id)) continue
+        r -= w.weight
+        if (r <= 0) { picked.push(w.id); used.add(w.id); break }
+      }
+      if (picked.length === used.size && picked.length < limit) {
+        for (const z of callouts) {
+          if (!used.has(z.id)) { picked.push(z.id); used.add(z.id); break }
+        }
+      }
+    }
+    return picked
+  }, [callouts, currentMapId])
+
   const startExam = useCallback(
     (jugador) => {
-      const questions = pick20RandomZones()
+      const questions = pick20WeightedZones()
       if (questions.length === 0) return
+      setMapSection('zones')
       setExamJugador(jugador)
       setExamQuestions(questions)
       setExamCurrentIndex(0)
       setExamScore(0)
       setExamFeedback(null)
+      setExamTimer(examTimerEnabled ? examTimeLimit : 0)
       setExamStep('exam')
       setPracticeMode(false)
       setEditMode(false)
     },
-    [pick20RandomZones]
+    [pick20WeightedZones, examTimerEnabled, examTimeLimit]
   )
+
+  useEffect(() => {
+    if (examStep !== 'exam' || !examTimerEnabled || examFeedback) return
+    if (examTimer <= 0) {
+      setExamFeedback('incorrect')
+      const failKey = `valoplant-fails-${currentMapId}`
+      let fails = {}
+      try { fails = JSON.parse(localStorage.getItem(failKey) || '{}') } catch {}
+      const correctId = examQuestions[examCurrentIndex]
+      fails[correctId] = (fails[correctId] || 0) + 1
+      localStorage.setItem(failKey, JSON.stringify(fails))
+      setTimeout(() => {
+        setExamFeedback(null)
+        const nextIndex = examCurrentIndex + 1
+        if (nextIndex >= examQuestions.length) {
+          saveExamResult(examJugador.id, { score: examScore, total: examQuestions.length, mapId: currentMapId })
+          setExamStep('result')
+        } else {
+          setExamCurrentIndex(nextIndex)
+          setExamTimer(examTimeLimit)
+        }
+      }, 600)
+      return
+    }
+    const id = setInterval(() => setExamTimer((t) => Math.max(0, t - 1)), 1000)
+    return () => clearInterval(id)
+  }, [examStep, examTimerEnabled, examTimer, examFeedback, examCurrentIndex, examQuestions, examJugador, examScore, currentMapId, examTimeLimit])
 
   const handleExamZoneClick = useCallback(
     (zone) => {
       if (examStep !== 'exam' || examCurrentIndex >= examQuestions.length) return
       const correctId = examQuestions[examCurrentIndex]
       const correct = zone.id === correctId
+      if (!correct) {
+        const failKey = `valoplant-fails-${currentMapId}`
+        let fails = {}
+        try { fails = JSON.parse(localStorage.getItem(failKey) || '{}') } catch {}
+        fails[correctId] = (fails[correctId] || 0) + 1
+        localStorage.setItem(failKey, JSON.stringify(fails))
+      }
       setExamFeedback(correct ? 'correct' : 'incorrect')
       setTimeout(() => {
         setExamFeedback(null)
@@ -141,10 +207,11 @@ export default function CalloutsPage() {
         } else {
           setExamScore(newScore)
           setExamCurrentIndex(nextIndex)
+          if (examTimerEnabled) setExamTimer(examTimeLimit)
         }
       }, 600)
     },
-    [examStep, examCurrentIndex, examQuestions, examJugador, examScore, currentMapId]
+    [examStep, examCurrentIndex, examQuestions, examJugador, examScore, currentMapId, examTimerEnabled, examTimeLimit]
   )
 
   const handleMapViewZoneClick = useCallback(
@@ -226,6 +293,44 @@ export default function CalloutsPage() {
     setLastJson((prev) => (prev?.id === id ? null : prev))
   }, [])
 
+  const handleExportCallouts = useCallback(() => {
+    const blob = new Blob([JSON.stringify(callouts, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `callouts-${currentMapId}-${new Date().toISOString().slice(0, 10)}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }, [callouts, currentMapId])
+
+  const handleImportCallouts = useCallback(() => {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = '.json'
+    input.onchange = (e) => {
+      const file = e.target.files?.[0]
+      if (!file) return
+      const reader = new FileReader()
+      reader.onload = () => {
+        try {
+          const imported = JSON.parse(reader.result)
+          if (!Array.isArray(imported)) { alert('El archivo no contiene un array válido'); return }
+          const merge = confirm('¿Fusionar con los callouts existentes? (Cancelar = reemplazar)')
+          if (merge) {
+            setCallouts((prev) => {
+              const ids = new Set(prev.map((c) => c.id))
+              return [...prev, ...imported.filter((c) => !ids.has(c.id))]
+            })
+          } else {
+            setCallouts(imported)
+          }
+        } catch { alert('Error al leer el archivo JSON') }
+      }
+      reader.readAsText(file)
+    }
+    input.click()
+  }, [])
+
   const handleCopyJson = useCallback(() => {
     if (!lastJson) return
     const text = JSON.stringify(lastJson, null, 2)
@@ -274,16 +379,7 @@ export default function CalloutsPage() {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-3 shrink-0">
-            {currentMap?.model3D && (
-              <button
-                type="button"
-                onClick={() => setShow3DViewer(true)}
-                className="rounded-lg border border-[var(--valorant-cyan)]/40 bg-[var(--valorant-cyan)]/10 px-4 py-3 min-h-[44px] text-sm font-medium text-[var(--valorant-cyan)] transition hover:bg-[var(--valorant-cyan)]/20 touch-target"
-              >
-                Ver Bind en 3D
-              </button>
-            )}
-            {callouts.length >= 5 && examStep === 'idle' && (
+            {mapSection === 'zones' && (currentMap.simpleMapPath || currentMap.imagePath) && callouts.length >= 5 && examStep === 'idle' && (
               <button
                 type="button"
                 onClick={() => setExamStep('select')}
@@ -391,6 +487,26 @@ export default function CalloutsPage() {
               <p className="text-sm text-gray-400 mb-4">
                 Hasta 20 preguntas en el mapa <strong className="text-gray-300">{currentMap.name}</strong>. El resultado se guardará en tu historial.
               </p>
+              <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--valorant-cyan)]/20 bg-[var(--valorant-dark)] p-3">
+                <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-400">
+                  <input type="checkbox" checked={examTimerEnabled} onChange={(e) => setExamTimerEnabled(e.target.checked)} className="accent-[var(--valorant-cyan)]" />
+                  Contrarreloj
+                </label>
+                {examTimerEnabled && (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="range"
+                      min={3}
+                      max={30}
+                      value={examTimeLimit}
+                      onChange={(e) => setExamTimeLimit(Number(e.target.value))}
+                      className="w-24 accent-[var(--valorant-cyan)]"
+                    />
+                    <span className="text-sm font-medium text-[var(--valorant-cyan)]">{examTimeLimit}s</span>
+                  </div>
+                )}
+                <span className="text-xs text-gray-500">Las zonas más falladas aparecen con más frecuencia.</span>
+              </div>
               <div className="flex flex-wrap gap-2 mb-4">
                 {allowedExamJugadores.map((m) => (
                   <button
@@ -439,120 +555,167 @@ export default function CalloutsPage() {
             </div>
           )}
 
-          <div className="mb-4 rounded-xl border border-[var(--valorant-cyan)]/20 bg-[var(--valorant-panel)]/60 p-4">
-            {isExamActive && examQuestionZone && (
-              <div className="mb-3 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] p-3">
-                <span className="rounded bg-[var(--valorant-panel)] px-2 py-0.5 text-sm font-medium text-[var(--valorant-cyan)]">
-                  Pregunta {examCurrentIndex + 1}/{examQuestions.length}
-                </span>
-                <p className="text-lg font-semibold text-[var(--valorant-cyan)]">
-                  ¿Dónde está <span className="text-white">{examQuestionZone?.name}</span>?
-                </p>
-                {examFeedback === 'correct' && <span className="text-green-400 font-semibold">¡Correcto!</span>}
-                {examFeedback === 'incorrect' && <span className="text-[var(--valorant-red)] font-semibold">No, prueba otra zona.</span>}
-              </div>
+          <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-[var(--valorant-cyan)]/20 bg-[var(--valorant-panel)]/60 p-2">
+            <button
+              type="button"
+              onClick={() => setMapSection('zones')}
+              className={`rounded-lg px-4 py-3 min-h-[44px] text-sm font-medium transition touch-target ${
+                mapSection === 'zones'
+                  ? 'bg-[var(--valorant-cyan)] text-[var(--valorant-black)]'
+                  : 'text-gray-400 hover:bg-white/5 hover:text-white'
+              }`}
+            >
+              Mapa con zonas
+            </button>
+            <button
+              type="button"
+              onClick={() => setMapSection('image')}
+              className={`rounded-lg px-4 py-3 min-h-[44px] text-sm font-medium transition touch-target ${
+                mapSection === 'image'
+                  ? 'bg-[var(--valorant-cyan)] text-[var(--valorant-black)]'
+                  : 'text-gray-400 hover:bg-white/5 hover:text-white'
+              }`}
+            >
+              Imagen detallada
+            </button>
+            {currentMap?.model3D && (
+              <button
+                type="button"
+                onClick={() => setMapSection('3d')}
+                className={`rounded-lg px-4 py-3 min-h-[44px] text-sm font-medium transition touch-target ${
+                  mapSection === '3d'
+                    ? 'bg-[var(--valorant-cyan)] text-[var(--valorant-black)]'
+                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                Vista 3D
+              </button>
             )}
-            {practiceMode && !practiceReverseMode && practiceZone && (
-              <div className="mb-3 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] p-3">
-                <p className="text-lg font-semibold text-[var(--valorant-cyan)]">
-                  ¿Dónde está <span className="text-white">{practiceZone?.name}</span>?
-                </p>
-                {practiceFeedback === 'correct' && <span className="text-green-400 font-semibold">¡Correcto!</span>}
-                {practiceFeedback === 'incorrect' && <span className="text-[var(--valorant-red)] font-semibold">No, prueba otra zona.</span>}
-              </div>
-            )}
-            {isPracticeReverse && practiceZone && (
-              <div className="mb-3 rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] p-3">
-                <p className="text-lg font-semibold text-[var(--valorant-cyan)] mb-2">¿Cómo se llama esta zona?</p>
-                <div className="flex flex-wrap items-center gap-2">
-                  <input
-                    type="text"
-                    value={practiceGuessInput}
-                    onChange={(e) => setPracticeGuessInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && checkPracticeGuess()}
-                    placeholder="Escribe el nombre del callout..."
-                    className="flex-1 min-w-[200px] rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-black)] px-3 py-3 min-h-[44px] text-base text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={checkPracticeGuess}
-                    disabled={!practiceGuessInput.trim()}
-                    className="rounded-lg bg-[var(--valorant-cyan)] px-4 py-3 min-h-[44px] text-sm font-semibold text-[var(--valorant-black)] transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed touch-target"
-                  >
-                    Comprobar
-                  </button>
-                </div>
-                {practiceFeedback === 'correct' && <span className="inline-block mt-2 text-green-400 font-semibold">¡Correcto!</span>}
-                {practiceFeedback === 'incorrect' && <span className="inline-block mt-2 text-[var(--valorant-red)] font-semibold">No, prueba otra vez.</span>}
-              </div>
-            )}
-            <p className="text-sm text-gray-300">
-              {editMode ? (
-                <>
-                  <span className="font-semibold text-[var(--valorant-cyan)]">Modo Edición</span>
-                  {' '}(mapa <strong>{currentMap.name}</strong>). Haz <strong>clic</strong> en el mapa para añadir puntos al polígono (mínimo 3). Usa los botones de abajo para deshacer, cancelar o terminar y poner nombre.
-                </>
-              ) : practiceMode ? (
-                practiceReverseMode ? (
-                  <>La zona resaltada en el mapa es la que debes nombrar. Escribe el callout y pulsa <strong>Comprobar</strong> o Enter.</>
-                ) : (
-                  <>Haz <strong>clic</strong> en la zona del mapa que corresponde al callout que se muestra.</>
-                )
-              ) : (
-                <>
-                  Mapa <strong>{currentMap.name}</strong>. Pasa el <strong>ratón</strong> sobre una zona para resaltarla. <strong>Clic</strong> en una zona para ver su nombre. Clic en la lista para resaltarla en el mapa.
-                </>
-              )}
-            </p>
           </div>
 
-          {editMode && (
-            <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-panel)] p-3">
-              <span className="text-sm text-gray-400">Puntos: <strong className="text-[var(--valorant-cyan)]">{editPoints.length}</strong></span>
-              <button
-                type="button"
-                onClick={handleUndoPoint}
-                disabled={editPoints.length === 0}
-                className="rounded-lg border border-gray-500 px-4 py-3 min-h-[44px] text-sm text-gray-300 transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50 touch-target"
-              >
-                Deshacer último
-              </button>
-              <button
-                type="button"
-                onClick={handleCancelPolygon}
-                disabled={editPoints.length === 0}
-                className="rounded-lg border border-gray-500 px-4 py-3 min-h-[44px] text-sm text-gray-300 transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50 touch-target"
-              >
-                Cancelar polígono
-              </button>
-              <button
-                type="button"
-                onClick={handleFinishPolygon}
-                disabled={editPoints.length < 3}
-                className="rounded-lg bg-[var(--valorant-cyan)] px-4 py-3 min-h-[44px] text-sm font-semibold text-[var(--valorant-black)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 touch-target"
-              >
-                Terminar y nombrar
-              </button>
+          {mapSection === 'zones' && (
+          <>
+            {isExamActive && examQuestionZone && (
+              <div className="mb-4 rounded-xl border border-[var(--valorant-cyan)]/20 bg-[var(--valorant-panel)]/60 p-4">
+                <div className="flex flex-wrap items-center gap-3 rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] p-3">
+                  <span className="rounded bg-[var(--valorant-panel)] px-2 py-0.5 text-sm font-medium text-[var(--valorant-cyan)]">
+                    Pregunta {examCurrentIndex + 1}/{examQuestions.length}
+                  </span>
+                  <p className="text-lg font-semibold text-[var(--valorant-cyan)]">
+                    ¿Dónde está <span className="text-white">{examQuestionZone?.name}</span>?
+                  </p>
+                  {examTimerEnabled && !examFeedback && (
+                    <span className={`ml-auto rounded px-2 py-0.5 text-sm font-bold ${examTimer <= 3 ? 'text-[var(--valorant-red)] animate-pulse' : 'text-[var(--valorant-cyan)]'}`}>
+                      {examTimer}s
+                    </span>
+                  )}
+                  {examFeedback === 'correct' && <span className="text-green-400 font-semibold">¡Correcto!</span>}
+                  {examFeedback === 'incorrect' && <span className="text-[var(--valorant-red)] font-semibold">No, prueba otra zona.</span>}
+                </div>
+              </div>
+            )}
+            {!isExamActive && practiceMode && !practiceReverseMode && practiceZone && (
+              <div className="mb-4 rounded-xl border border-[var(--valorant-cyan)]/20 bg-[var(--valorant-panel)]/60 p-4">
+                <div className="flex flex-wrap items-center gap-3 rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] p-3">
+                  <p className="text-lg font-semibold text-[var(--valorant-cyan)]">
+                    ¿Dónde está <span className="text-white">{practiceZone?.name}</span>?
+                  </p>
+                  {practiceFeedback === 'correct' && <span className="text-green-400 font-semibold">¡Correcto!</span>}
+                  {practiceFeedback === 'incorrect' && <span className="text-[var(--valorant-red)] font-semibold">No, prueba otra zona.</span>}
+                </div>
+              </div>
+            )}
+            {!isExamActive && isPracticeReverse && practiceZone && (
+              <div className="mb-4 rounded-xl border border-[var(--valorant-cyan)]/20 bg-[var(--valorant-panel)]/60 p-4">
+                <div className="rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] p-3">
+                  <p className="text-lg font-semibold text-[var(--valorant-cyan)] mb-2">¿Cómo se llama esta zona?</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <input
+                      type="text"
+                      value={practiceGuessInput}
+                      onChange={(e) => setPracticeGuessInput(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && checkPracticeGuess()}
+                      placeholder="Escribe el nombre del callout..."
+                      className="flex-1 min-w-[200px] rounded-lg border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-black)] px-3 py-3 min-h-[44px] text-base text-white placeholder-gray-500 focus:border-[var(--valorant-cyan)] focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={checkPracticeGuess}
+                      disabled={!practiceGuessInput.trim()}
+                      className="rounded-lg bg-[var(--valorant-cyan)] px-4 py-3 min-h-[44px] text-sm font-semibold text-[var(--valorant-black)] transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed touch-target"
+                    >
+                      Comprobar
+                    </button>
+                  </div>
+                  {practiceFeedback === 'correct' && <span className="inline-block mt-2 text-green-400 font-semibold">¡Correcto!</span>}
+                  {practiceFeedback === 'incorrect' && <span className="inline-block mt-2 text-[var(--valorant-red)] font-semibold">No, prueba otra vez.</span>}
+                </div>
+              </div>
+            )}
+
+            {editMode && (
+              <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-panel)] p-3">
+                <span className="text-sm text-gray-400">Puntos: <strong className="text-[var(--valorant-cyan)]">{editPoints.length}</strong></span>
+                <button type="button" onClick={handleUndoPoint} disabled={editPoints.length === 0} className="rounded-lg border border-gray-500 px-4 py-3 min-h-[44px] text-sm text-gray-300 transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50 touch-target">
+                  Deshacer último
+                </button>
+                <button type="button" onClick={handleCancelPolygon} disabled={editPoints.length === 0} className="rounded-lg border border-gray-500 px-4 py-3 min-h-[44px] text-sm text-gray-300 transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-50 touch-target">
+                  Cancelar polígono
+                </button>
+                <button type="button" onClick={handleFinishPolygon} disabled={editPoints.length < 3} className="rounded-lg bg-[var(--valorant-cyan)] px-4 py-3 min-h-[44px] text-sm font-semibold text-[var(--valorant-black)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 touch-target">
+                  Terminar y nombrar
+                </button>
+              </div>
+            )}
+
+            {(currentMap.simpleMapPath || currentMap.imagePath) ? (
+              <div className="rounded-xl overflow-hidden border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] shadow-xl shadow-black/30">
+                <div className="flex justify-center p-2 sm:p-4">
+                  <MapView
+                    editMode={editMode}
+                    callouts={callouts}
+                    editPoints={editPoints}
+                    setEditPoints={setEditPoints}
+                    onRequestNameForPolygon={handleRequestNameForPolygon}
+                    mapImagePath={currentMap.simpleMapPath || currentMap.imagePath}
+                    mapName={currentMap.name}
+                    highlightZoneId={isExamActive ? null : practiceMode ? (isPracticeReverse ? practiceZoneId : null) : selectedZoneId}
+                    onClearHighlight={() => setSelectedZoneId(null)}
+                    onZoneClick={isExamActive ? handleExamZoneClick : practiceMode && !practiceReverseMode ? handleMapViewZoneClick : undefined}
+                    practiceMode={practiceMode || isExamActive}
+                  />
+                </div>
+              </div>
+            ) : (
+              <p className="rounded-xl border border-[var(--valorant-cyan)]/20 bg-[var(--valorant-panel)]/60 p-4 text-gray-500">Sin imagen de mapa disponible.</p>
+            )}
+          </>
+          )}
+
+          {mapSection === 'image' && (
+            <div className="rounded-xl overflow-hidden border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] shadow-xl shadow-black/30">
+              <p className="px-4 py-2 text-sm text-gray-400">Imagen de referencia detallada (sin zonas interactivas).</p>
+              <div className="flex justify-center p-2 sm:p-4">
+                {(currentMap.referenceImagePath || currentMap.imagePath) ? (
+                  <img
+                    src={currentMap.referenceImagePath || currentMap.imagePath}
+                    alt={`Referencia ${currentMap.name}`}
+                    className="max-w-full max-w-[700px] h-auto object-contain rounded-lg"
+                  />
+                ) : (
+                  <p className="text-gray-500 py-8">Sin imagen de referencia para este mapa.</p>
+                )}
+              </div>
             </div>
           )}
 
-          <div className="rounded-xl overflow-hidden border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] shadow-xl shadow-black/30">
-            <div className="flex justify-center p-2 sm:p-4">
-              <MapView
-                editMode={editMode}
-                callouts={callouts}
-                editPoints={editPoints}
-                setEditPoints={setEditPoints}
-                onRequestNameForPolygon={handleRequestNameForPolygon}
-                mapImagePath={currentMap.imagePath}
-                mapName={currentMap.name}
-                highlightZoneId={practiceMode || isExamActive ? (isPracticeReverse ? practiceZoneId : null) : selectedZoneId}
-                onClearHighlight={() => setSelectedZoneId(null)}
-                onZoneClick={isExamActive ? handleExamZoneClick : practiceMode && !practiceReverseMode ? handleMapViewZoneClick : undefined}
-                practiceMode={practiceMode || isExamActive}
-              />
+          {mapSection === '3d' && currentMap?.model3D && (
+            <div className="rounded-xl overflow-hidden border border-[var(--valorant-cyan)]/30 bg-[var(--valorant-dark)] shadow-xl shadow-black/30" style={{ height: '70vh' }}>
+              <Suspense fallback={<div className="flex h-full items-center justify-center text-gray-400">Cargando modelo 3D...</div>}>
+                <Map3DViewer modelPath={currentMap.model3D} />
+              </Suspense>
             </div>
-          </div>
+          )}
         </div>
 
         <aside className="w-full shrink-0 flex flex-col gap-4 lg:w-80">
@@ -579,8 +742,16 @@ export default function CalloutsPage() {
                 </button>
               </div>
             </div>
+            <div className="mb-2 flex flex-wrap gap-1.5">
+              <button type="button" onClick={handleExportCallouts} className="rounded border border-[var(--valorant-cyan)]/20 px-2 py-1 text-xs text-[var(--valorant-cyan)] hover:bg-[var(--valorant-cyan)]/10 transition">
+                Descargar .json
+              </button>
+              <button type="button" onClick={handleImportCallouts} className="rounded border border-[var(--valorant-cyan)]/20 px-2 py-1 text-xs text-[var(--valorant-cyan)] hover:bg-[var(--valorant-cyan)]/10 transition">
+                Importar .json
+              </button>
+            </div>
             <p className="mb-2 text-xs text-gray-500">
-              Guardado en el navegador. Usa «Exportar todo» y pega en <code className="text-gray-400">src/data/callouts/{currentMapId}.json</code> para fijarlo en el proyecto.
+              Guardado en el navegador. Usa «Exportar todo» o descarga el .json para compartir.
             </p>
             <input
               type="search"
@@ -670,17 +841,6 @@ export default function CalloutsPage() {
         onCancel={handleCancelNameModal}
       />
 
-      {show3DViewer && currentMap?.model3D && (
-        <Suspense
-          fallback={
-            <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#1a1a1f]">
-              <p className="text-[var(--valorant-cyan)] font-medium">Cargando vista 3D…</p>
-            </div>
-          }
-        >
-          <Map3DViewer onClose={() => setShow3DViewer(false)} />
-        </Suspense>
-      )}
     </div>
   )
 }

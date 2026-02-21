@@ -3,7 +3,10 @@ import Layout from './components/Layout'
 import HomePage from './pages/HomePage'
 import CalloutsPage from './pages/CalloutsPage'
 import HistorialPage from './pages/HistorialPage'
-import ComingSoonPage from './pages/ComingSoonPage'
+import LineupsPage from './pages/LineupsPage'
+import AgentCompsPage from './pages/AgentCompsPage'
+import NotesPage from './pages/NotesPage'
+import StrategiesPage from './pages/StrategiesPage'
 
 export default function App() {
   return (
@@ -12,11 +15,11 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="callouts" element={<CalloutsPage />} />
+          <Route path="lineups" element={<LineupsPage />} />
+          <Route path="estrategias" element={<StrategiesPage />} />
           <Route path="historial" element={<HistorialPage />} />
-          <Route path="estrategias" element={<ComingSoonPage />} />
-          <Route path="roster" element={<ComingSoonPage />} />
-          <Route path="calendario" element={<ComingSoonPage />} />
-          <Route path="comunicacion" element={<ComingSoonPage />} />
+          <Route path="composiciones" element={<AgentCompsPage />} />
+          <Route path="notas" element={<NotesPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

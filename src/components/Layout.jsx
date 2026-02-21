@@ -1,19 +1,44 @@
-import { useState } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { APP_VERSION, APP_NAME } from '../version'
 
 const navItems = [
   { to: '/', label: 'Inicio', icon: HomeIcon, exact: true },
   { to: '/callouts', label: 'Callouts', icon: MapIcon, exact: false },
+  { to: '/lineups', label: 'Lineups', icon: CrosshairIcon, exact: false },
+  { to: '/estrategias', label: 'Estrategias', icon: BookIcon, exact: false },
   { to: '/historial', label: 'Historial', icon: HistoryIcon, exact: false },
-  { to: '/estrategias', label: 'Estrategias', icon: BookIcon, soon: true },
-  { to: '/roster', label: 'Roster', icon: UsersIcon, soon: true },
-  { to: '/calendario', label: 'Calendario', icon: CalendarIcon, soon: true },
-  { to: '/comunicacion', label: 'Comunicación', icon: MessageIcon, soon: true },
+  { to: '/composiciones', label: 'Composiciones', icon: UsersIcon, exact: false },
+  { to: '/notas', label: 'Notas', icon: MessageIcon, exact: false },
 ]
 
 export default function Layout() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [theme, setTheme] = useState(() => localStorage.getItem('valoplant-theme') || 'dark')
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('valoplant-theme', theme)
+  }, [theme])
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return
+      const key = e.key.toLowerCase()
+      if (key === '1') { e.preventDefault(); navigate('/') }
+      else if (key === '2') { e.preventDefault(); navigate('/callouts') }
+      else if (key === '3') { e.preventDefault(); navigate('/lineups') }
+      else if (key === '4') { e.preventDefault(); navigate('/estrategias') }
+      else if (key === '5') { e.preventDefault(); navigate('/historial') }
+      else if (key === '6') { e.preventDefault(); navigate('/composiciones') }
+      else if (key === '7') { e.preventDefault(); navigate('/notas') }
+      else if (key === 't' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); setTheme((t) => (t === 'dark' ? 'light' : 'dark')) }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [navigate])
 
   return (
     <div className="flex min-h-screen bg-[var(--valorant-black)]">
@@ -48,19 +73,7 @@ export default function Layout() {
           </button>
         </div>
         <nav className="flex-1 space-y-0.5 overflow-y-auto p-3">
-          {navItems.map(({ to, label, icon: Icon, exact, soon }) =>
-            soon ? (
-              <span
-                key={to}
-                className="flex items-center gap-3 rounded-lg px-3 py-3 min-h-[44px] text-sm font-medium text-gray-500 opacity-80"
-              >
-                <Icon className="h-5 w-5 shrink-0" />
-                <span className="truncate">{label}</span>
-                <span className="ml-auto shrink-0 rounded bg-[var(--valorant-panel)] px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-gray-500">
-                  Pronto
-                </span>
-              </span>
-            ) : (
+          {navItems.map(({ to, label, icon: Icon, exact }) => (
               <NavLink
                 key={to}
                 to={to}
@@ -77,10 +90,21 @@ export default function Layout() {
                 <Icon className="h-5 w-5 shrink-0" />
                 <span className="truncate">{label}</span>
               </NavLink>
-            )
-          )}
+          ))}
         </nav>
-        <div className="border-t border-[var(--valorant-cyan)]/10 p-3">
+        <div className="border-t border-[var(--valorant-cyan)]/10 p-3 space-y-2">
+          <button
+            type="button"
+            onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs text-gray-400 hover:bg-white/5 hover:text-gray-200 transition"
+          >
+            {theme === 'dark' ? (
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+            ) : (
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+            )}
+            {theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
+          </button>
           <p className="text-center text-[10px] text-gray-600" title="Acerca de">
             {APP_NAME} v{APP_VERSION}
           </p>
@@ -177,10 +201,14 @@ function TargetIcon({ className }) {
     </svg>
   )
 }
-function UserIcon({ className }) {
+function CrosshairIcon({ className }) {
   return (
     <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      <circle cx="12" cy="12" r="10" strokeWidth={2} />
+      <line x1="22" y1="12" x2="18" y2="12" strokeWidth={2} />
+      <line x1="6" y1="12" x2="2" y2="12" strokeWidth={2} />
+      <line x1="12" y1="6" x2="12" y2="2" strokeWidth={2} />
+      <line x1="12" y1="22" x2="12" y2="18" strokeWidth={2} />
     </svg>
   )
 }

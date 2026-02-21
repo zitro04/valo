@@ -1,0 +1,127 @@
+[
+    {
+      "id": "escoba",
+      "name": "Escoba",
+      "points": "894,441 893,501 921,497 920,445"
+    },
+    {
+      "id": "palos",
+      "name": "Palos",
+      "points": "855,441 852,493 888,499 896,445"
+    },
+    {
+      "id": "patata",
+      "name": "Patata",
+      "points": "921,396 893,395 893,437 920,438"
+    },
+    {
+      "id": "grados",
+      "name": "Grados",
+      "points": "862,392 877,392 877,424 862,424"
+    },
+    {
+      "id": "bolsa",
+      "name": "Bolsa",
+      "points": "862,290 864,313 921,316 921,291"
+    },
+    {
+      "id": "tanque",
+      "name": "Tanque",
+      "points": "697,275 805,277 808,331 692,331"
+    },
+    {
+      "id": "caja-tanque",
+      "name": "Caja Tanque",
+      "points": "695,316 744,317 743,333 695,329"
+    },
+    {
+      "id": "piedras",
+      "name": "Piedras",
+      "points": "826,275 858,317 857,275"
+    },
+    {
+      "id": "default",
+      "name": "Default",
+      "points": "793,359 795,389 760,389 762,365"
+    },
+    {
+      "id": "queso",
+      "name": "Queso",
+      "points": "858,402 845,399 842,441 858,439"
+    },
+    {
+      "id": "ventilador",
+      "name": "Ventilador",
+      "points": "757,408 796,438 753,438"
+    },
+    {
+      "id": "circo",
+      "name": "Circo",
+      "points": "697,360 753,363 751,427 692,428"
+    },
+    {
+      "id": "guantes",
+      "name": "Guantes",
+      "points": "666,478 728,486 721,497 669,497"
+    },
+    {
+      "id": "reja",
+      "name": "Reja",
+      "points": "571,458 610,460 610,496 570,491"
+    },
+    {
+      "id": "cristal",
+      "name": "Cristal",
+      "points": "609,403 640,428 640,401"
+    },
+    {
+      "id": "link-a",
+      "name": "Link A",
+      "points": "574,403 571,457 613,454 669,458 665,437 625,428 604,415 603,402"
+    },
+    {
+      "id": "gallo",
+      "name": "Gallo",
+      "points": "613,496 613,552 638,553 639,500"
+    },
+    {
+      "id": "ruinas",
+      "name": "Ruinas",
+      "points": "563,527 584,556 557,555"
+    },
+    {
+      "id": "pincho",
+      "name": "Pincho",
+      "points": "524,357 525,414 543,411 545,362"
+    },
+    {
+      "id": "cartel",
+      "name": "Cartel",
+      "points": "478,441 447,480 446,448"
+    },
+    {
+      "id": "leche",
+      "name": "Leche",
+      "points": "449,483 472,481 470,527 446,527"
+    },
+    {
+      "id": "antena",
+      "name": "Antena",
+      "points": "554,579 543,576 541,607 555,607"
+    },
+    {
+      "id": "perro",
+      "name": "Perro",
+      "points": "446,553 472,553 473,615 447,608"
+    },
+    {
+      "id": "dado",
+      "name": "Dado",
+      "points": "472,659 486,663 491,693 470,690"
+    },
+    {
+      "id": "pala",
+      "name": "Pala",
+      "points": "429,722 489,718 491,749 424,751"
+    }
+  ]
