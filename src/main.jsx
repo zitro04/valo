@@ -11,6 +11,18 @@ createRoot(document.getElementById('root')).render(
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
+    const isTauri =
+      typeof window !== 'undefined' &&
+      ('__TAURI_INTERNALS__' in window || navigator.userAgent.includes('Tauri'))
+
+    if (isTauri) {
+      navigator.serviceWorker
+        .getRegistrations()
+        .then((regs) => Promise.all(regs.map((r) => r.unregister())))
+        .catch(() => {})
+      return
+    }
+
     navigator.serviceWorker.register('/sw.js').catch(() => {})
   })
 }

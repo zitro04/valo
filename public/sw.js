@@ -1,4 +1,4 @@
-const CACHE_NAME = 'calloutlab-v2'
+const CACHE_NAME = 'calloutlab-v5'
 const PRECACHE = [
   '/',
   '/index.html',
