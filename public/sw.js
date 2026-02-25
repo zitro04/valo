@@ -1,5 +1,21 @@
-const CACHE_NAME = 'calloutlab-v1'
-const PRECACHE = ['/', '/index.html', '/pearl-icon.png', '/pearledit.png', '/corrode.png', '/bindmapa.webp', '/manifest.json']
+const CACHE_NAME = 'calloutlab-v2'
+const PRECACHE = [
+  '/',
+  '/index.html',
+  '/pearl-icon.png',
+  '/pearledit.png',
+  '/ascent.png',
+  '/bind.png',
+  '/breeze.png',
+  '/fracture.png',
+  '/haven.png',
+  '/icebox.png',
+  '/lotus.png',
+  '/split.png',
+  '/sunset.png',
+  '/corrode.png',
+  '/manifest.json',
+]
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()))

@@ -21,13 +21,14 @@ export const agents = [
   { name: 'Fade', role: 'Iniciador' },
   { name: 'KAY/O', role: 'Iniciador' },
   { name: 'Gekko', role: 'Iniciador' },
+  { name: 'Tejo', role: 'Iniciador' },
   { name: 'Cypher', role: 'Centinela' },
   { name: 'Killjoy', role: 'Centinela' },
   { name: 'Sage', role: 'Centinela' },
   { name: 'Chamber', role: 'Centinela' },
   { name: 'Deadlock', role: 'Centinela' },
   { name: 'Vyse', role: 'Centinela' },
-  { name: 'Tejo', role: 'Centinela' },
+  { name: 'Veto', role: 'Centinela' },
 ]
 
 export const ABILITY_TYPES = ['Humo', 'Flash', 'Molotov', 'Recon', 'Muro', 'Ulti', 'Otro']
